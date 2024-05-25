@@ -1,2 +1,3 @@
+com\example\parkinglot\Ticket.class
+com\example\parkinglot\ParkingLotController.class
 com\example\parkinglot\ParkinglotApplication.class
-com\example\parkinglot\controller\WelcomeController.class
