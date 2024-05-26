@@ -6,7 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ParkingLotController {
@@ -22,10 +26,12 @@ public class ParkingLotController {
     }
 
     @PostMapping("/exit")
-    public Map<String, Object> exit(@RequestParam String ticketId) {
+    public ResponseEntity<Map<String, Object>> exit(@RequestParam String ticketId) {
         Ticket ticket = tickets.remove(ticketId);
         if (ticket == null) {
-            throw new RuntimeException("Ticket not found");
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Ticket not found");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
         LocalDateTime exitTime = LocalDateTime.now();
@@ -39,6 +45,6 @@ public class ParkingLotController {
         response.put("parkingLotId", ticket.getParkingLot());
         response.put("charge", charge);
 
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
