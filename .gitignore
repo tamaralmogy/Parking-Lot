@@ -1,0 +1,8 @@
+# Ignore AWS key files
+*.pem
+
+# Ignore environment variables
+.env
+
+# Ignore secrets
+config/secrets.json

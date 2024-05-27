@@ -65,6 +65,7 @@ echo "setup production environment"
 ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-user@$PUBLIC_IP <<EOF
     sudo yum update -y
     sudo yum install -y java-17-amazon-corretto maven git
+
     # Check if the repository already exists
     if [ -d "/home/ec2-user/parkinglot" ]; then
         echo "Repository exists. Pulling the latest changes..."
@@ -84,4 +85,4 @@ ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-use
 EOF
 
 echo "test that it all worked"
-curl  --retry-connrefused --retry 10 --retry-delay 1  http://$PUBLIC_IP:8080
+curl  --retry-connrefused --retry 10 --retry-delay 1  http://$PUBLIC_IP:8080/api/entry?plate=123-123-123&parkingLot=382
