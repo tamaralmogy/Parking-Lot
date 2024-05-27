@@ -57,7 +57,7 @@ PUBLIC_IP=$(aws ec2 describe-instances  --instance-ids $INSTANCE_ID |
 )
 
 echo "New instance $INSTANCE_ID @ $PUBLIC_IP"
-# to change
+
 echo "deploying code to production"
 scp -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=60" deploy.sh ec2-user@$PUBLIC_IP:/home/ec2-user
 
@@ -85,10 +85,17 @@ ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-use
 EOF
 
 echo "test that it all worked"
-curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/entry?plate=123-123-123&parkingLot=382"
+ENTRY_RESPONSE=$(curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/entry?plate=123-123-123&parkingLot=382")
+echo "Entry Response: $ENTRY_RESPONSE"
 
-# Assuming the ticketId for exit test would be captured or known
-TICKET_ID=$(curl -X POST "http://$PUBLIC_IP:8080/entry?plate=123-123-123&parkingLot=382")
+# Extract ticketId from response
+TICKET_ID=$(echo $ENTRY_RESPONSE | jq -r '.')
+
+echo "Ticket ID: $TICKET_ID"
+
+echo "Waiting for a short period to simulate parking time..."
+sleep 60  # Wait for 1 minute
 
 echo "testing exit endpoint"
-curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/exit?ticketId=$TICKET_ID"
+EXIT_RESPONSE=$(curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/exit?ticketId=$TICKET_ID")
+echo "Exit Response: $EXIT_RESPONSE"
