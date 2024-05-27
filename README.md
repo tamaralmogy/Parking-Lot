@@ -76,7 +76,12 @@ The system exposes two HTTP endpoints:
     ```sh
     ./deploy.sh
     ```
+## Technologies Used
 
+- Maven
+- Java
+- Spring Boot
+  
 ## Deliverables
 
 - The code that handles the `/entry` and `/exit` endpoints.
