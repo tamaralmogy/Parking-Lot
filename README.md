@@ -20,7 +20,6 @@ The charge for parking is $10 per hour, calculated in 15-minute increments.
 The system exposes two HTTP endpoints:
 
 1. **POST /entry**
-
    Records the entry of a car into the parking lot.
 
    **Parameters**:
@@ -33,9 +32,9 @@ The system exposes two HTTP endpoints:
    **Example**:
    ```sh
    curl -X POST "http://<PUBLIC_IP>:8080/entry?plate=123-123-123&parkingLot=382"
-   
+
 2. **POST /exit**
-  Records the exit of a car from the parking lot and calculates the parking charge.
+   Records the exit of a car from the parking lot and calculates the parking charge.
 
 **Parameters**:
 
