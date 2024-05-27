@@ -89,7 +89,7 @@ ENTRY_RESPONSE=$(curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "ht
 echo "Entry Response: $ENTRY_RESPONSE"
 
 # Extract ticketId from response
-TICKET_ID=$(echo $ENTRY_RESPONSE | jq -r '.')
+TICKET_ID=$ENTRY_RESPONSE
 
 echo "Ticket ID: $TICKET_ID"
 
