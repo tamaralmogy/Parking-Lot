@@ -35,23 +35,23 @@ The system exposes two HTTP endpoints:
 
 2. **POST /exit**
    Records the exit of a car from the parking lot and calculates the parking charge.
+   
+   **Parameters**:
+   
+   - `ticketId` (string): ID of the ticket.
+   
+   **Response**:
+   
+   Returns a JSON object containing:
+   - `licensePlate`: The license plate of the car.
+   - `totalParkedTime`: The total parked time in minutes.
+   - `parkingLotId`: The ID of the parking lot.
+   - `charge`: The parking charge.
+   
+   **Example**:
 
-**Parameters**:
-
-- `ticketId` (string): ID of the ticket.
-
-**Response**:
-
-Returns a JSON object containing:
-- `licensePlate`: The license plate of the car.
-- `totalParkedTime`: The total parked time in minutes.
-- `parkingLotId`: The ID of the parking lot.
-- `charge`: The parking charge.
-
-**Example**:
-
-```sh
-curl -X POST "http://<PUBLIC_IP>:8080/exit?ticketId=1234"
+   ```sh
+   curl -X POST "http://<PUBLIC_IP>:8080/exit?ticketId=1234"
 
 ## Deployment
 
