@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parking Lot Exit</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        margin-bottom: 5px;
+        color: #555;
+      }
+      input[type="text"] {
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Parking Lot Exit</h1>
+      <form id="exitForm">
+        <label for="ticketId">Ticket ID:</label>
+        <input type="text" id="ticketId" name="ticketId" required />
+        <button type="submit">Submit</button>
+      </form>
+      <p id="response"></p>
+    </div>
+    <script>
+      document
+        .getElementById("exitForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const ticketId = document.getElementById("ticketId").value;
+          fetch(
+            `http://${window.location.hostname}:8080/exit?ticketId=${ticketId}`,
+            {
+              method: "POST",
+            }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("response").innerText =
+                `License Plate: ${data.licensePlate}\n` +
+                `Total Parked Time: ${data.totalParkedTime} minutes\n` +
+                `Parking Lot ID: ${data.parkingLotId}\n` +
+                `Charge: $${data.charge}`;
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+    </script>
+  </body>
+</html>

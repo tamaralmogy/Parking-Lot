@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parking Lot Entry</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        margin-bottom: 5px;
+        color: #555;
+      }
+      input[type="text"] {
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Parking Lot Entry</h1>
+      <form id="entryForm">
+        <label for="plate">License Plate:</label>
+        <input type="text" id="plate" name="plate" required />
+        <label for="parkingLot">Parking Lot ID:</label>
+        <input type="text" id="parkingLot" name="parkingLot" required />
+        <button type="submit">Submit</button>
+      </form>
+      <p id="response"></p>
+    </div>
+    <script>
+      document
+        .getElementById("entryForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const plate = document.getElementById("plate").value;
+          const parkingLot = document.getElementById("parkingLot").value;
+          fetch(
+            `http://${window.location.hostname}:8080/entry?plate=${plate}&parkingLot=${parkingLot}`,
+            {
+              method: "POST",
+            }
+          )
+            .then((response) => response.text())
+            .then((data) => {
+              document.getElementById(
+                "response"
+              ).innerText = `Ticket ID: ${data}`;
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+    </script>
+  </body>
+</html>
