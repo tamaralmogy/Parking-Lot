@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # debug
 # set -o xtrace
 
@@ -28,9 +30,9 @@ aws ec2 authorize-security-group-ingress        \
     --group-name $SEC_GRP --port 22 --protocol tcp \
     --cidr $MY_IP/32
 
-echo "setup rule allowing HTTP (port 5000) access to $MY_IP only"
+echo "setup rule allowing HTTP (port 8080) access to everyone only"
 aws ec2 authorize-security-group-ingress        \
-    --group-name $SEC_GRP --port 5000 --protocol tcp \
+    --group-name $SEC_GRP --port 8080 --protocol tcp \
     --cidr 0.0.0.0/0
 
 # change to amazom-linux
@@ -38,7 +40,7 @@ AMAZON_LINUX_2024="ami-01f10c2d6bce70d90"
 
 
 # creating instance -  change echo command
-echo "Creating Ubuntu 20.04 instance..."
+echo "Creating AMAZON-LINUX 2024 instance..."
 RUN_INSTANCES=$(aws ec2 run-instances   \
     --image-id $AMAZON_LINUX_2024        \
     --instance-type t2.micro            \
@@ -61,8 +63,8 @@ scp -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=60" deploy.
 
 echo "setup production environment"
 ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-user@$PUBLIC_IP <<EOF
-    sudo apt update
-    sudo apt install -y openjdk-17-jdk maven git
+    sudo yum update -y
+    sudo yum install -y java-17-amazon-corretto maven git
     
     # Clone the repository (assuming the code is in a Git repository)
     git clone https://github.com/tamaralmogy/Parking-Lot /home/ec2-user/parkinglot
@@ -72,9 +74,9 @@ ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-use
     mvn clean package
 
     # Run the application
-    nohup java -jar target/parkinglot-0.0.1-SNAPSHOT.jar &
+    nohup java -jar target/parkinglot-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
     exit
 EOF
 
 echo "test that it all worked"
-curl  --retry-connrefused --retry 10 --retry-delay 1  http://$PUBLIC_IP:5000
+curl  --retry-connrefused --retry 10 --retry-delay 1  http://$PUBLIC_IP:8080
