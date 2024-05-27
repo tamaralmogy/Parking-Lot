@@ -85,4 +85,10 @@ ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-use
 EOF
 
 echo "test that it all worked"
-curl  --retry-connrefused --retry 10 --retry-delay 1  http://$PUBLIC_IP:8080/api/entry?plate=123-123-123&parkingLot=382
+curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/entry?plate=123-123-123&parkingLot=382"
+
+# Assuming the ticketId for exit test would be captured or known
+TICKET_ID=$(curl -X POST "http://$PUBLIC_IP:8080/entry?plate=123-123-123&parkingLot=382")
+
+echo "testing exit endpoint"
+curl -X POST --retry-connrefused --retry 10 --retry-delay 1 "http://$PUBLIC_IP:8080/exit?ticketId=$TICKET_ID"
