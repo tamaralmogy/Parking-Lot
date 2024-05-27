@@ -65,11 +65,16 @@ echo "setup production environment"
 ssh -i $KEY_PEM -o "StrictHostKeyChecking=no" -o "ConnectionAttempts=10" ec2-user@$PUBLIC_IP <<EOF
     sudo yum update -y
     sudo yum install -y java-17-amazon-corretto maven git
-    
-    # Clone the repository (assuming the code is in a Git repository)
-    git clone https://github.com/tamaralmogy/Parking-Lot /home/ec2-user/parkinglot
-    cd /home/ec2-user/parkinglot
-
+    # Check if the repository already exists
+    if [ -d "/home/ec2-user/parkinglot" ]; then
+        echo "Repository exists. Pulling the latest changes..."
+        cd /home/ec2-user/parkinglot
+        git pull
+    else
+        echo "Cloning the repository..."
+        git clone https://github.com/tamaralmogy/Parking-Lot /home/ec2-user/parkinglot
+        cd /home/ec2-user/parkinglot
+    fi
     # Build the project
     mvn clean package
 
